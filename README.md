@@ -4,12 +4,10 @@ To manage migrations, you'll need to install the migrate tool, [golang-migrate](
 
 If you choose to install it locally, you can execute commands directly from the [migration_tool.sh](./migration_tool.sh) file.
 
-> [!NOTE] 
-> **Setting up the Database**
+> [!NOTE] **Setting up the Database**
 > This project utilizes a PostgreSQL database. Ensure you have PostgreSQL running before applying migrations. To configure the application for your database, create and customize a `.env` file based on the [.env.example](./.env.example) provided.
 
-> [!WARNING] 
-> **Attention: Migration Setup**
+> [!WARNING] **Attention: Migration Setup**
 > It's crucial to modify the PostgreSQL URL within the [migration_tool.sh](./migration_tool.sh) file (currently, this process requires manual intervention) at line 6.
 
 ### Creating a Migration
