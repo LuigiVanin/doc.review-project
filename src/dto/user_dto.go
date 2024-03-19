@@ -9,7 +9,7 @@ type CreateUserDto struct {
 	Type     string `json:"type" validate:"required,oneof=Professor Aluno" db:"type"`
 }
 
-type GetUserDto struct {
+type ResponseUserDto struct {
 	Id        string    `json:"id" db:"id"`
 	Name      string    `json:"name" db:"name"`
 	Email     string    `json:"email" db:"email"`

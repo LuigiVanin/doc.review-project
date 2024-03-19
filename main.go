@@ -18,9 +18,10 @@ func main() {
 
 	userRepository := repository.NewUserRepositoryImpl(database)
 
-	hashService := service.NewHashPasswordBcrypt()
+	hashService := service.NewHashBcryptService()
 	userService := service.NewUserServiceImpl(userRepository)
-	authService := service.NewAuthServiceImpl(config, hashService, userRepository)
+	jwtService := service.NewJwtServiceImpl(config)
+	authService := service.NewAuthServiceImpl(config, hashService, jwtService, userRepository)
 
 	userController := controller.NewUserController(userService)
 	authController := controller.NewAuthController(authService)

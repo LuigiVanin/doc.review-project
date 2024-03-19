@@ -6,7 +6,7 @@ import (
 )
 
 type UserRepository interface {
-	FindById(id string) (dto.GetUserDto, error)
+	FindById(id string) (dto.ResponseUserDto, error)
 	FindByEmail(email string) (entity.User, error)
 	Create(user dto.CreateUserDto) (entity.User, error)
 }

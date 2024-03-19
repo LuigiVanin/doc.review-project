@@ -21,16 +21,16 @@ func (service *UserServiceImpl) FindById(id string) (interface{}, error) {
 	panic("implement me")
 }
 
-func (service *UserServiceImpl) Create(user dto.CreateUserDto) (dto.GetUserDto, error) {
+func (service *UserServiceImpl) Create(user dto.CreateUserDto) (dto.ResponseUserDto, error) {
 
 	_, err := service.userRepository.FindByEmail(user.Email)
 
 	if err == nil {
-		return dto.GetUserDto{}, errors.NewConflictError("Email already exists")
+		return dto.ResponseUserDto{}, errors.NewConflictError("Email already exists")
 	}
 
 	if responseUser, err := service.userRepository.Create(user); err == nil {
-		return dto.GetUserDto{
+		return dto.ResponseUserDto{
 			Id:        responseUser.Id,
 			Type:      responseUser.Type,
 			Name:      responseUser.Name,
@@ -39,7 +39,7 @@ func (service *UserServiceImpl) Create(user dto.CreateUserDto) (dto.GetUserDto, 
 			UpdatedAt: responseUser.UpdatedAt,
 		}, nil
 	} else {
-		return dto.GetUserDto{}, err
+		return dto.ResponseUserDto{}, err
 	}
 
 }

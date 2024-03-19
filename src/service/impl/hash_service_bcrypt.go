@@ -6,14 +6,14 @@ import (
 	"golang.org/x/crypto/bcrypt"
 )
 
-type HashPasswordBcrypt struct {
+type HashBcryptService struct {
 }
 
-func NewHashPasswordBcrypt() *HashPasswordBcrypt {
-	return &HashPasswordBcrypt{}
+func NewHashBcryptService() *HashBcryptService {
+	return &HashBcryptService{}
 }
 
-func (h *HashPasswordBcrypt) HashPassword(password string, hashSalt string) (string, error) {
+func (h *HashBcryptService) HashPassword(password string, hashSalt string) (string, error) {
 	salt, err := strconv.Atoi(hashSalt)
 
 	if err != nil {
@@ -24,7 +24,7 @@ func (h *HashPasswordBcrypt) HashPassword(password string, hashSalt string) (str
 	return string(bytes), err
 }
 
-func (h *HashPasswordBcrypt) ComparePassword(hashedPassword, password string) bool {
+func (h *HashBcryptService) ComparePassword(hashedPassword string, password string) bool {
 	err := bcrypt.CompareHashAndPassword([]byte(hashedPassword), []byte(password))
 	return err == nil
 }

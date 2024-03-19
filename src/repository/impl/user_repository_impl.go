@@ -16,9 +16,9 @@ func NewUserRepositoryImpl(database *sqlx.DB) *UserRepositoryImpl {
 
 }
 
-func (repository *UserRepositoryImpl) FindById(id string) (dto.GetUserDto, error) {
+func (repository *UserRepositoryImpl) FindById(id string) (dto.ResponseUserDto, error) {
 	query := "SELECT id, type, name, email, created_at, updated_at FROM users WHERE id = $1"
-	var user dto.GetUserDto
+	var user dto.ResponseUserDto
 
 	err := repository.database.Get(user, query, id)
 
@@ -27,7 +27,7 @@ func (repository *UserRepositoryImpl) FindById(id string) (dto.GetUserDto, error
 
 func (repository *UserRepositoryImpl) FindByEmail(email string) (entity.User, error) {
 
-	query := "SELECT * updated_at FROM users WHERE email = $1"
+	query := "SELECT * FROM users WHERE email = $1"
 	var user entity.User
 
 	err := repository.database.Get(&user, query, email)
