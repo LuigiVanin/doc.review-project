@@ -2,35 +2,34 @@ package controller
 
 import (
 	"doc-review/src/dto"
-	"doc-review/src/middleware"
+	"doc-review/src/exceptions/errors"
+	"doc-review/src/guard"
 	"doc-review/src/service"
-	"fmt"
 
 	"github.com/gofiber/fiber/v2"
 )
 
 type UserController struct {
 	userService service.UserService
+	authGuard   guard.Guard
 }
 
-func NewUserController(us service.UserService) *UserController {
+func NewUserController(us service.UserService, ag guard.Guard) *UserController {
 	return &UserController{
 		userService: us,
+		authGuard:   ag,
 	}
-}
-
-func (controller *UserController) Register(app *fiber.App) {
-
-	app.Get("/users/:id", controller.FindById)
-	app.Post("/users", middleware.JsonValidator[dto.CreateUserDto](), controller.Create)
 }
 
 func (controller *UserController) FindById(c *fiber.Ctx) error {
 	userId := c.Params("id")
+	authUser := c.Locals("user").(dto.ResponseUserDto)
 
-	fmt.Println("FindById", userId)
+	if userId == authUser.Id {
+		return c.Status(200).JSON(authUser)
+	}
 
-	return nil
+	return errors.NewUnauthorizedError("Unauthorized access to user data")
 }
 
 func (controller *UserController) Create(c *fiber.Ctx) error {
@@ -43,4 +42,9 @@ func (controller *UserController) Create(c *fiber.Ctx) error {
 	}
 
 	return c.Status(201).JSON(res)
+}
+
+func (controller *UserController) Register(app *fiber.App) {
+
+	app.Get("/users/:id", controller.authGuard.Activate, controller.FindById)
 }

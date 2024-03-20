@@ -3,6 +3,7 @@ package impl
 import (
 	"doc-review/src/dto"
 	"doc-review/src/entity"
+	"fmt"
 
 	"github.com/jmoiron/sqlx"
 )
@@ -16,11 +17,14 @@ func NewUserRepositoryImpl(database *sqlx.DB) *UserRepositoryImpl {
 
 }
 
-func (repository *UserRepositoryImpl) FindById(id string) (dto.ResponseUserDto, error) {
-	query := "SELECT id, type, name, email, created_at, updated_at FROM users WHERE id = $1"
-	var user dto.ResponseUserDto
+func (repository *UserRepositoryImpl) FindById(id string) (entity.User, error) {
+	fmt.Println("FindById", id)
+	query := "SELECT * FROM users WHERE id = $1"
+	var user entity.User
 
-	err := repository.database.Get(user, query, id)
+	err := repository.database.Get(&user, query, id)
+
+	// fmt.Println("Error", err.Error())
 
 	return user, err
 }

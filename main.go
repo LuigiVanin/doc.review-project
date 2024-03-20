@@ -4,6 +4,7 @@ import (
 	module "doc-review/src"
 	"doc-review/src/configuration"
 	"doc-review/src/controller"
+	"doc-review/src/guard"
 	repository "doc-review/src/repository/impl"
 	service "doc-review/src/service/impl"
 
@@ -11,6 +12,7 @@ import (
 )
 
 func main() {
+	app := module.NewApiApp()
 
 	config := configuration.NewConfig()
 	database := configuration.NewDatabase(config)
@@ -23,10 +25,10 @@ func main() {
 	jwtService := service.NewJwtServiceImpl(config)
 	authService := service.NewAuthServiceImpl(config, hashService, jwtService, userRepository)
 
-	userController := controller.NewUserController(userService)
-	authController := controller.NewAuthController(authService)
+	authGuard := guard.NewAuthorizationGuard(userService, jwtService, userRepository)
 
-	app := module.NewApiApp()
+	authController := controller.NewAuthController(authService)
+	userController := controller.NewUserController(userService, authGuard)
 
 	app.Register(authController)
 	app.Register(userController)

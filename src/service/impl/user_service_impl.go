@@ -17,8 +17,23 @@ func NewUserServiceImpl(ur repository.UserRepository) service.UserService {
 	}
 }
 
-func (service *UserServiceImpl) FindById(id string) (interface{}, error) {
-	panic("implement me")
+func (service *UserServiceImpl) FindById(id string) (dto.ResponseUserDto, error) {
+
+	if responseUser, err := service.userRepository.FindById(id); err == nil || responseUser.Id != "" {
+		return dto.ResponseUserDto{
+			Id:        responseUser.Id,
+			Type:      responseUser.Type,
+			Name:      responseUser.Name,
+			Email:     responseUser.Email,
+			CreatedAt: responseUser.CreatedAt,
+			UpdatedAt: responseUser.UpdatedAt,
+		}, nil
+	} else {
+		if err != nil {
+			return dto.ResponseUserDto{}, errors.NewInternalServerError(err.Error())
+		}
+		return dto.ResponseUserDto{}, errors.NewNotFoundError("User not found")
+	}
 }
 
 func (service *UserServiceImpl) Create(user dto.CreateUserDto) (dto.ResponseUserDto, error) {
