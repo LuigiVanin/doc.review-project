@@ -4,7 +4,6 @@ import (
 	"doc-review/src/exceptions/errors"
 	"doc-review/src/repository"
 	"doc-review/src/service"
-	"fmt"
 
 	"github.com/gofiber/fiber/v2"
 )
@@ -39,20 +38,23 @@ func (ag *AuthorizationGuard) Activate(ctx *fiber.Ctx) error {
 		return err
 	}
 
+	// TODO: Add Bearer check on the start of the Authorization Header
+
 	payload, err := ag.jwtService.VerifyToken(header.Authorization)
 
 	if err != nil {
 		return errors.NewUnauthorizedError("Bad Formatted token")
 	}
-	fmt.Println(payload.UserId)
 
 	user, err := ag.userService.FindById(payload.UserId)
+
+	// TODO: Add jwt time validation
 
 	if err != nil {
 		return errors.NewUnauthorizedError("User not found")
 	}
 
-	ctx.Locals("user", user)
+	ctx.Locals("user", &user)
 
 	return ctx.Next()
 }

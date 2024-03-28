@@ -19,19 +19,23 @@ func main() {
 	defer database.Close()
 
 	userRepository := repository.NewUserRepositoryImpl(database)
+	documentRepository := repository.NewDocumentRepositoryImpl(database)
 
 	hashService := service.NewHashBcryptService()
 	userService := service.NewUserServiceImpl(userRepository)
 	jwtService := service.NewJwtServiceImpl(config)
 	authService := service.NewAuthServiceImpl(config, hashService, jwtService, userRepository)
+	documentService := service.NewDocumentServiceImpl(documentRepository)
 
 	authGuard := guard.NewAuthorizationGuard(userService, jwtService, userRepository)
 
 	authController := controller.NewAuthController(authService)
 	userController := controller.NewUserController(userService, authGuard)
+	documentController := controller.NewDocumentController(documentService, authGuard)
 
 	app.Register(authController)
 	app.Register(userController)
+	app.Register(documentController)
 
 	app.Start()
 }

@@ -1,21 +1,26 @@
 package middleware
 
 import (
-	helpers "doc-review/src/common"
 	errors "doc-review/src/exceptions/errors"
+	helpers "doc-review/src/lib"
 
 	"github.com/gofiber/fiber/v2"
 )
 
+func ParseContextBody[T interface{}](ctx *fiber.Ctx) (*T, *errors.AppError) {
+	var data T
+	if err := ctx.BodyParser(&data); err != nil {
+		return nil, errors.NewBadRequestError("Invalid request body")
+	}
+	return &data, nil
+}
+
 func JsonValidator[T interface{}]() func(ctx *fiber.Ctx) error {
 	return func(ctx *fiber.Ctx) error {
-		data, err := helpers.ParseContextBody[T](ctx)
+		data, err := ParseContextBody[T](ctx)
 
 		if err != nil {
-			return &fiber.Error{
-				Code:    fiber.ErrBadRequest.Code,
-				Message: err.Error(),
-			}
+			return err
 		}
 
 		if err := helpers.Validation(data); err != nil {

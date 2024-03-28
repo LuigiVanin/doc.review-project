@@ -1,9 +1,9 @@
 CREATE TYPE user_type AS ENUM ('Professor', 'Aluno');
 
 CREATE TABLE users (
-	Id UUID NOT NULL PRIMARY KEY,
-	Name TEXT NOT NULL,
-	Email TEXT NOT NULL UNIQUE,
-	Type user_type NOT NULL,
-	Password TEXT NOT NULL
+	id UUID NOT NULL PRIMARY KEY,
+	name TEXT NOT NULL,
+	email TEXT NOT NULL UNIQUE,
+	type user_type NOT NULL,
+	password TEXT NOT NULL
 );

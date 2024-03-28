@@ -23,7 +23,7 @@ func NewUserController(us service.UserService, ag guard.Guard) *UserController {
 
 func (controller *UserController) FindById(c *fiber.Ctx) error {
 	userId := c.Params("id")
-	authUser := c.Locals("user").(dto.ResponseUserDto)
+	authUser := c.Locals("user").(*dto.ResponseUserDto)
 
 	if userId == authUser.Id {
 		return c.Status(200).JSON(authUser)
