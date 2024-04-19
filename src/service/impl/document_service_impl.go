@@ -24,3 +24,7 @@ func (ds *DocumentServiceImpl) Create(user dto.ResponseUserDto, document dto.Cre
 
 	return ds.documentRepository.Create(user.Id, document)
 }
+
+func (ds *DocumentServiceImpl) ListUserDocuments(userId string) ([]entity.Document, error) {
+	return ds.documentRepository.ListUserDocuments(userId)
+}

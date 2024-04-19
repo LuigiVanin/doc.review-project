@@ -7,4 +7,5 @@ import (
 
 type DocumentService interface {
 	Create(user dto.ResponseUserDto, document dto.CreateDocumentDto) (entity.Document, error)
+	ListUserDocuments(userId string) ([]entity.Document, error)
 }

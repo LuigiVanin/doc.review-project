@@ -28,3 +28,42 @@ func (repository *DocumentRepositoryImpl) Create(userId string, document dto.Cre
 
 	return responseDocument, nil
 }
+
+func (repository *DocumentRepositoryImpl) ListUserDocuments(userId string) ([]entity.Document, error) {
+	query := "SELECT * FROM documents WHERE author_id = $1"
+	var documents []entity.Document
+
+	err := repository.database.Select(&documents, query, userId)
+
+	if err != nil {
+		return documents, err
+	}
+
+	return documents, nil
+}
+
+func (repository *DocumentRepositoryImpl) ListHomeworkDocuments(homeworkId string) ([]entity.Document, error) {
+	query := "SELECT * FROM documents WHERE homeword_id = $1"
+	var documents []entity.Document
+
+	err := repository.database.Select(&documents, query, homeworkId)
+
+	if err != nil {
+		return documents, err
+	}
+
+	return documents, nil
+}
+
+func (repository *DocumentRepositoryImpl) UpdateDocument(documentId string, document dto.CreateDocumentDto) (entity.Document, error) {
+	query := "UPDATE documents SET title = $1, content = $2 WHERE id = $3 RETURNING *"
+	var responseDocument entity.Document
+
+	err := repository.database.Get(&responseDocument, query, document.Title, document.Content, documentId)
+
+	if err != nil {
+		return responseDocument, err
+	}
+
+	return responseDocument, nil
+}

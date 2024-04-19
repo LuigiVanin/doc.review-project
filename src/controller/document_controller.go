@@ -5,7 +5,6 @@ import (
 	"doc-review/src/guard"
 	m "doc-review/src/middleware"
 	"doc-review/src/service"
-	"fmt"
 
 	"github.com/gofiber/fiber/v2"
 )
@@ -23,13 +22,9 @@ func NewDocumentController(ds service.DocumentService, ag guard.Guard) *Document
 }
 
 func (controller *DocumentController) Create(c *fiber.Ctx) error {
-	fmt.Println("TESTE: ")
 
 	documentBody := c.Locals("json").(*dto.CreateDocumentDto)
 	user := c.Locals("user").(*dto.ResponseUserDto)
-
-	fmt.Println("Document: ", documentBody)
-	fmt.Println("User: ", user)
 
 	document, err := controller.documentService.Create(*user, *documentBody)
 
@@ -40,6 +35,27 @@ func (controller *DocumentController) Create(c *fiber.Ctx) error {
 	return c.Status(201).JSON(document)
 }
 
+func (controller *DocumentController) ListUserDocuments(c *fiber.Ctx) error {
+	user := c.Locals("user").(*dto.ResponseUserDto)
+	document, err := controller.documentService.ListUserDocuments(user.Id)
+
+	if err != nil {
+		return err
+	}
+
+	return c.JSON(document)
+}
+
 func (controller *DocumentController) Register(app *fiber.App) {
-	app.Post("/documents", m.JsonValidator[dto.CreateDocumentDto](), controller.authGuard.Activate, controller.Create)
+	app.Post(
+		"/documents",
+		m.JsonValidator[dto.CreateDocumentDto](),
+		controller.authGuard.Activate,
+		controller.Create,
+	)
+	app.Get(
+		"/documents",
+		controller.authGuard.Activate,
+		controller.ListUserDocuments,
+	)
 }
