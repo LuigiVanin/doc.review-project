@@ -1,6 +1,7 @@
 package guard
 
 import (
+	Enum "doc-review/src/entity/enum"
 	"doc-review/src/exceptions/errors"
 	"doc-review/src/repository"
 	"doc-review/src/service"
@@ -54,7 +55,7 @@ func (ag *AuthorizationGuard) Activate(ctx *fiber.Ctx) error {
 		return errors.NewUnauthorizedError("User not found")
 	}
 
-	ctx.Locals("user", &user)
+	ctx.Locals(Enum.LocalsUser, &user)
 
 	return ctx.Next()
 }

@@ -2,13 +2,11 @@ package middleware
 
 import (
 	"doc-review/src/exceptions/errors"
-	"fmt"
 
 	"github.com/gofiber/fiber/v2"
 )
 
 func ErrorHandlerMiddleware(ctx *fiber.Ctx, err error) error {
-	fmt.Println("Error Handler Middleware", err)
 
 	if appErr, ok := err.(*errors.AppError); ok {
 		return ctx.Status(appErr.Status).JSON(appErr)

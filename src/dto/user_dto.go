@@ -6,7 +6,7 @@ type CreateUserDto struct {
 	Name     string `json:"name" validate:"required,min=3,max=100" db:"name"`
 	Email    string `json:"email" validate:"required,email" db:"email"`
 	Password string `json:"password" validate:"required,min=6,max=100" db:"password"`
-	Type     string `json:"type" validate:"required,oneof=Professor Aluno" db:"type"`
+	Type     string `json:"type" validate:"required,oneof=TEACHER STUDENT" db:"type"`
 }
 
 type ResponseUserDto struct {

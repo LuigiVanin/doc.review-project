@@ -20,6 +20,7 @@ func NewUserServiceImpl(ur repository.UserRepository) service.UserService {
 func (service *UserServiceImpl) FindById(id string) (dto.ResponseUserDto, error) {
 
 	if responseUser, err := service.userRepository.FindById(id); err == nil || responseUser.Id != "" {
+
 		return dto.ResponseUserDto{
 			Id:        responseUser.Id,
 			Type:      responseUser.Type,
@@ -56,5 +57,4 @@ func (service *UserServiceImpl) Create(user dto.CreateUserDto) (dto.ResponseUser
 	} else {
 		return dto.ResponseUserDto{}, err
 	}
-
 }

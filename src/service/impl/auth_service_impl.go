@@ -30,14 +30,14 @@ func NewAuthServiceImpl(
 	}
 }
 
-func (as *AuthServiceImpl) Signin(creadential dto.SigninDto) (service.SigninResponse, error) {
-	user, err := as.userRepository.FindByEmail(creadential.Email)
+func (as *AuthServiceImpl) Signin(credential dto.SigninDto) (service.SigninResponse, error) {
+	user, err := as.userRepository.FindByEmail(credential.Email)
 
 	if err != nil {
 		return service.SigninResponse{}, errors.NewNotFoundError("User not found")
 	}
 
-	if as.hashService.ComparePassword(user.Password, creadential.Password) {
+	if as.hashService.ComparePassword(user.Password, credential.Password) {
 		payload := service.JwtPayload{
 			UserId: user.Id,
 			Time:   time.Now().Unix(),

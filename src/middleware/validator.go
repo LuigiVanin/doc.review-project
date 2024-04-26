@@ -1,6 +1,7 @@
 package middleware
 
 import (
+	Enum "doc-review/src/entity/enum"
 	errors "doc-review/src/exceptions/errors"
 	helpers "doc-review/src/lib"
 
@@ -38,7 +39,7 @@ func JsonValidator[T interface{}]() func(ctx *fiber.Ctx) error {
 				Message: err.Error(),
 			}
 		}
-		ctx.Locals("json", data)
+		ctx.Locals(Enum.LocalsJsonBody, data)
 		return ctx.Next()
 	}
 }

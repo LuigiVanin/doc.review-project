@@ -2,6 +2,7 @@ package controller
 
 import (
 	"doc-review/src/dto"
+	Enum "doc-review/src/entity/enum"
 	m "doc-review/src/middleware"
 	"doc-review/src/service"
 
@@ -19,7 +20,7 @@ func NewAuthController(us service.AuthService) *AuthController {
 }
 
 func (controller *AuthController) Signin(c *fiber.Ctx) error {
-	user := c.Locals("json").(*dto.SigninDto)
+	user := c.Locals(Enum.LocalsJsonBody).(*dto.SigninDto)
 
 	res, err := controller.userService.Signin(*user)
 
@@ -31,7 +32,7 @@ func (controller *AuthController) Signin(c *fiber.Ctx) error {
 }
 
 func (controller *AuthController) Signup(c *fiber.Ctx) error {
-	user := c.Locals("json").(*dto.SignupDto)
+	user := c.Locals(Enum.LocalsJsonBody).(*dto.SignupDto)
 
 	res, err := controller.userService.Signup(*user)
 

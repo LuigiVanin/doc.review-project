@@ -2,6 +2,7 @@ package controller
 
 import (
 	"doc-review/src/dto"
+	Enum "doc-review/src/entity/enum"
 	"doc-review/src/guard"
 	m "doc-review/src/middleware"
 	"doc-review/src/service"
@@ -23,8 +24,8 @@ func NewDocumentController(ds service.DocumentService, ag guard.Guard) *Document
 
 func (controller *DocumentController) Create(c *fiber.Ctx) error {
 
-	documentBody := c.Locals("json").(*dto.CreateDocumentDto)
-	user := c.Locals("user").(*dto.ResponseUserDto)
+	documentBody := c.Locals(Enum.LocalsJsonBody).(*dto.CreateDocumentDto)
+	user := c.Locals(Enum.LocalsUser).(*dto.ResponseUserDto)
 
 	document, err := controller.documentService.Create(*user, *documentBody)
 
@@ -36,7 +37,7 @@ func (controller *DocumentController) Create(c *fiber.Ctx) error {
 }
 
 func (controller *DocumentController) ListUserDocuments(c *fiber.Ctx) error {
-	user := c.Locals("user").(*dto.ResponseUserDto)
+	user := c.Locals(Enum.LocalsUser).(*dto.ResponseUserDto)
 	document, err := controller.documentService.ListUserDocuments(user.Id)
 
 	if err != nil {
@@ -46,16 +47,59 @@ func (controller *DocumentController) ListUserDocuments(c *fiber.Ctx) error {
 	return c.JSON(document)
 }
 
+func (controller *DocumentController) Patch(c *fiber.Ctx) error {
+	user := c.Locals(Enum.LocalsUser).(*dto.ResponseUserDto)
+	requestBody := c.Locals(Enum.LocalsJsonBody).(*dto.PatchDocumentDto)
+	requestParam := c.Params("id")
+
+	requestBody.Id = requestParam
+
+	document, err := controller.documentService.Update(*user, *requestBody)
+
+	if err != nil {
+		return err
+	}
+
+	return c.JSON(document)
+}
+
+func (controller *DocumentController) FindById(c *fiber.Ctx) error {
+	user := c.Locals(Enum.LocalsUser).(*dto.ResponseUserDto)
+	requestParam := c.Params("id")
+
+	document, err := controller.documentService.FindById(*user, requestParam)
+
+	if err != nil {
+		return err
+	}
+
+	return c.JSON(document)
+}
+
 func (controller *DocumentController) Register(app *fiber.App) {
+	app.Get(
+		"/documents/:id",
+		controller.authGuard.Activate,
+		controller.FindById,
+	)
+
 	app.Post(
 		"/documents",
 		m.JsonValidator[dto.CreateDocumentDto](),
 		controller.authGuard.Activate,
 		controller.Create,
 	)
+
 	app.Get(
 		"/documents",
 		controller.authGuard.Activate,
 		controller.ListUserDocuments,
+	)
+
+	app.Patch(
+		"/documents/:id",
+		m.JsonValidator[dto.PatchDocumentDto](),
+		controller.authGuard.Activate,
+		controller.Patch,
 	)
 }
