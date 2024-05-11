@@ -35,10 +35,29 @@ func (controller *HomeworkController) Create(ctx *fiber.Ctx) error {
 
 }
 
+func (controller *HomeworkController) List(ctx *fiber.Ctx) error {
+	user := ctx.Locals("user").(*dto.ResponseUserDto)
+	homework, err := controller.homeworkService.ListUserHomeworks(*user)
+
+	if err != nil {
+		return err
+	}
+
+	return ctx.JSON(homework)
+}
+
 func (controller *HomeworkController) Register(app *fiber.App) {
 
-	app.Post("/homeworks",
-		m.JsonValidator[dto.CreateDocumentDto](),
+	app.Post(
+		"/homeworks",
+		m.JsonValidator[dto.CreateHomeworkDto](),
 		controller.authGuard.Activate,
-		controller.Create)
+		controller.Create,
+	)
+
+	app.Get(
+		"/homeworks",
+		controller.authGuard.Activate,
+		controller.List,
+	)
 }

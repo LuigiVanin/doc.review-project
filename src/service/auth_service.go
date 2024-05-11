@@ -3,8 +3,8 @@ package service
 import "doc-review/src/dto"
 
 type SigninResponse struct {
-	User  dto.ResponseUserDto
-	Token string
+	User  dto.ResponseUserDto `json:"user"`
+	Token string              `json:"token"`
 }
 
 type AuthService interface {

@@ -12,11 +12,34 @@ CREATE TABLE users (
 	updated_at TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
 
+CREATE TABLE homeworks (
+	id UUID NOT NULL PRIMARY KEY DEFAULT uuid_generate_v4(),
+	title VARCHAR(255) NOT NULL,
+	description TEXT NOT NULL,
+  owner_id UUID NOT NULL REFERENCES users(id),
+  deleted boolean NOT NULL DEFAULT FALSE,
+  code TEXT NOT NULL,
+  deadline_date TIMESTAMP WITH TIME ZONE DEFAULT NULL,
+  created_at TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT CURRENT_TIMESTAMP,
+
+  CONSTRAINT code_unique UNIQUE (code)
+);
+
 CREATE TABLE documents (
 	id UUID NOT NULL PRIMARY KEY DEFAULT uuid_generate_v4(),
 	title VARCHAR(255) NOT NULL,
 	content TEXT NOT NULL,
   author_id UUID NOT NULL REFERENCES users(id),
+	submitted_homework_id UUID REFERENCES homeworks(id) DEFAULT NULL,
   created_at TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT CURRENT_TIMESTAMP,
 	updated_at TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE participants (
+	id UUID NOT NULL PRIMARY KEY DEFAULT uuid_generate_v4(),
+  user_id UUID NOT NULL REFERENCES users(id),
+  homework_id UUID NOT NULL REFERENCES homeworks(id),
+  created_at TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT CURRENT_TIMESTAMP,
+
+  CONSTRAINT user_homework_unique UNIQUE (user_id, homework_id)
 );
