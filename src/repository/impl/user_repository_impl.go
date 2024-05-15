@@ -22,8 +22,6 @@ func (repository *UserRepositoryImpl) FindById(id string) (entity.User, error) {
 
 	err := repository.database.Get(&user, query, id)
 
-	// fmt.Println("Error", err.Error())
-
 	return user, err
 }
 

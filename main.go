@@ -12,7 +12,7 @@ import (
 )
 
 func main() {
-	app := module.NewApiApp()
+	api := module.NewApiApp()
 
 	config := configuration.NewConfig()
 	database := configuration.NewDatabase(config)
@@ -21,6 +21,7 @@ func main() {
 	userRepository := repository.NewUserRepositoryImpl(database)
 	documentRepository := repository.NewDocumentRepositoryImpl(database)
 	homeworkRepository := repository.NewHomeworkRepositoryImpl(database)
+	participantRepository := repository.NewParticipantRepositoryImpl(database)
 
 	hashService := service.NewHashBcryptService()
 	userService := service.NewUserServiceImpl(userRepository)
@@ -28,6 +29,7 @@ func main() {
 	authService := service.NewAuthServiceImpl(config, hashService, jwtService, userRepository)
 	documentService := service.NewDocumentServiceImpl(documentRepository)
 	homeworkService := service.NewHomeworkServiceImpl(homeworkRepository)
+	participantService := service.NewParticipantServiceImpl(participantRepository, homeworkRepository)
 
 	authGuard := guard.NewAuthorizationGuard(userService, jwtService, userRepository)
 
@@ -35,11 +37,13 @@ func main() {
 	userController := controller.NewUserController(userService, authGuard)
 	documentController := controller.NewDocumentController(documentService, authGuard)
 	homeworkController := controller.NewHomeworkController(homeworkService, authGuard)
+	participantController := controller.NewParticipantController(participantService, authGuard)
 
-	app.Register(authController)
-	app.Register(userController)
-	app.Register(documentController)
-	app.Register(homeworkController)
+	api.Register(authController)
+	api.Register(userController)
+	api.Register(documentController)
+	api.Register(participantController)
+	api.Register(homeworkController)
 
-	app.Start()
+	api.Start()
 }

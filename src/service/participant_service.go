@@ -1,6 +1,11 @@
 package service
 
+import (
+	"doc-review/src/dto"
+	"doc-review/src/entity"
+)
+
 type ParticipantService interface {
-	// Create(user dto.ResponseUserDto, participant dto.CreateParticipantDto) (entity.Participant, error)
+	AddParticipantToHomework(user dto.ResponseUserDto, homework_id string) (entity.Participant, error)
 	// ListHomeworkParticipants(homeworkId string) ([]entity.Participant, error)
 }
